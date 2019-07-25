@@ -208,6 +208,33 @@ describe('lib/runner', () => {
 
 		});
 
+		describe('when the site is using AMD', () => {
+			let htmlcsModule;
+
+			beforeEach(async () => {
+				htmlcsModule = {
+					HTMLCS: {
+						process: sinon.stub().yieldsAsync(),
+						getMessages: sinon.stub().returns(issues)
+					}
+				};
+				global.window.define = () => {};
+				global.window.define.amd = true;
+				global.window.require = sinon.stub().callsFake((dependency, callback) => {
+					callback(htmlcsModule);
+				});
+
+				await runner.run(options, pa11y);
+			});
+
+			it('calls require', () => {
+				assert.calledOnce(global.window.require);
+				sinon.assert.calledWith(global.window.require, 'htmlcs', sinon.match.typeOf('function'));
+				assert.calledOnce(htmlcsModule.HTMLCS.process);
+				assert.calledWith(htmlcsModule.HTMLCS.process, 'mock-standard', global.window.document);
+			});
+		});
+
 	});
 
 });
