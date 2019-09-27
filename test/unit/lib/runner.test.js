@@ -87,7 +87,11 @@ describe('lib/runner', () => {
 
 		it('runs HTML CodeSniffer', () => {
 			assert.calledOnce(global.window.HTMLCS.process);
-			assert.calledWith(global.window.HTMLCS.process, 'mock-standard', global.window.document);
+			assert.calledWith(
+				global.window.HTMLCS.process,
+				'mock-standard',
+				global.window.document
+			);
 		});
 
 		it('gets HTML CodeSniffer messages', () => {
@@ -201,7 +205,10 @@ describe('lib/runner', () => {
 
 				it('rejects with an error', () => {
 					assert.instanceOf(rejectedError, Error);
-					assert.strictEqual(rejectedError.message, 'mock-rule-5 is not a valid WCAG 2.0 rule');
+					assert.strictEqual(
+						rejectedError.message,
+						'mock-rule-5 is not a valid WCAG 2.0 rule'
+					);
 				});
 
 			});
@@ -218,6 +225,7 @@ describe('lib/runner', () => {
 						getMessages: sinon.stub().returns(issues)
 					}
 				};
+				// eslint-disable-next-line no-empty-function
 				global.window.define = () => {};
 				global.window.define.amd = true;
 				global.window.require = sinon.stub().callsFake((dependency, callback) => {
@@ -229,9 +237,17 @@ describe('lib/runner', () => {
 
 			it('calls require', () => {
 				assert.calledOnce(global.window.require);
-				sinon.assert.calledWith(global.window.require, 'htmlcs', sinon.match.typeOf('function'));
 				assert.calledOnce(htmlcsModule.HTMLCS.process);
-				assert.calledWith(htmlcsModule.HTMLCS.process, 'mock-standard', global.window.document);
+				sinon.assert.calledWith(
+					global.window.require,
+					sinon.match.array.deepEquals(['htmlcs']),
+					sinon.match.typeOf('function')
+				);
+				assert.calledWith(
+					htmlcsModule.HTMLCS.process,
+					'mock-standard',
+					global.window.document
+				);
 			});
 		});
 
