@@ -33,6 +33,6 @@
     "test": "make ci"
   },
   "dependencies": {
-    "html_codesniffer": "^2.4.1"
+    "html_codesniffer": "~2.4.1"
   }
 }
